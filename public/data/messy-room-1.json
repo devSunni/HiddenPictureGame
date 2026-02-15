@@ -1,7 +1,7 @@
 {
     "id": "1",
     "theme": "messy-room",
-    "background": "/src/assets/themes/messy-room/level_1.webp",
+    "background": "/assets/themes/messy-room/level_1.png",
     "items": [
         {
             "id": "key",
