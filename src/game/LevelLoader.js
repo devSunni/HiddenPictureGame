@@ -1,7 +1,7 @@
 export class LevelLoader {
     async loadLevel(themeId, levelId) {
         try {
-            const response = await fetch(`/data/${themeId}-${levelId}.json`);
+            const response = await fetch(`./data/${themeId}-${levelId}.json`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
