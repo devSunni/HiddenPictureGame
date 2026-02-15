@@ -98,20 +98,47 @@ export class Game {
         // Click handler
         bg.addEventListener('pointerdown', (e) => this.handleInteraction(e));
 
+        // Render Items
+        this.state.currentLevel.items.forEach(item => {
+            if (this.state.foundItems.includes(item.id)) return;
+
+            // Only render if image property exists
+            if (item.image) {
+                const itemEl = document.createElement('img');
+                itemEl.src = item.image;
+                itemEl.className = 'game-item';
+                itemEl.style.position = 'absolute';
+                itemEl.style.left = `${item.x * 100}%`;
+                itemEl.style.top = `${item.y * 100}%`;
+                itemEl.style.width = `${item.width * 100}%`;
+                itemEl.style.height = `${item.height * 100}%`;
+                itemEl.style.transform = 'translate(-50%, -50%)';
+                itemEl.style.objectFit = 'contain';
+                // let clicks pass through to BG handler, or bubble up
+                // pointer-events: none because we calculate hit detection manually on the container click
+                // This simplifies logic: we don't care what we clicked, only WHERE.
+                itemEl.style.pointerEvents = 'none';
+
+                bg.appendChild(itemEl);
+            }
+        });
+
         this.container.appendChild(bg);
     }
 
     handleInteraction(e) {
         if (!this.state.isPlaying) return;
 
-        const rect = e.target.getBoundingClientRect();
+        // Ensure we calculate coordinates relative to the background container
+        const bg = this.container.querySelector('.game-background');
+        if (!bg) return;
+
+        const rect = bg.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
         // Normalize coordinates to 0-100% relative to image
         const outputSize = { w: rect.width, h: rect.height };
-        // Note: This needs more complex logic to handle "contain" aspect ratio.
-        // simpler to map clicks to the image's coordinate space.
 
         console.log(`Clicked at ${x}, ${y}`);
 
@@ -124,12 +151,11 @@ export class Game {
         const items = this.state.currentLevel.items;
         let found = false;
 
-        // Iterate backwards to handle potential overlaps (topmost first)
+        // Iterate backwards to handle potential overlaps
         for (let i = items.length - 1; i >= 0; i--) {
             const item = items[i];
             if (this.state.foundItems.includes(item.id)) continue;
 
-            // Simple AABB collision detection (assuming x,y is center)
             const halfW = item.width / 2;
             const halfH = item.height / 2;
 
@@ -145,6 +171,7 @@ export class Game {
                 break;
             }
         }
+
 
         if (!found) {
             this.handleMiss(x, y);

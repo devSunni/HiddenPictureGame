@@ -1,33 +1,36 @@
 {
     "id": "1",
     "theme": "messy-room",
-    "background": "./assets/themes/messy-room/level_1.png",
+    "background": "https://placehold.co/1024x768/333/FFF?text=Messy+Room+Background+(Image+Gen+Failed)",
     "items": [
         {
             "id": "key",
             "name": "Red Key",
             "preview": "🔑",
+            "image": "https://placehold.co/80x80/red/white?text=Key",
             "x": 0.5,
             "y": 0.5,
-            "width": 0.1,
+            "width": 0.08,
             "height": 0.1
         },
         {
             "id": "coin",
             "name": "Gold Coin",
             "preview": "🪙",
+            "image": "https://placehold.co/60x60/gold/black?text=Coin",
             "x": 0.2,
             "y": 0.8,
-            "width": 0.08,
+            "width": 0.06,
             "height": 0.08
         },
         {
             "id": "potion",
             "name": "Blue Potion",
             "preview": "🧪",
+            "image": "https://placehold.co/60x80/blue/white?text=Potion",
             "x": 0.8,
             "y": 0.3,
-            "width": 0.08,
+            "width": 0.06,
             "height": 0.1
         }
     ]
