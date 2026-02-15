@@ -51,14 +51,7 @@ export class Game {
     }
 
 
-    startTimer() {
-        if (this.state.timerInterval) clearInterval(this.state.timerInterval);
-        this.state.timerInterval = setInterval(() => {
-            if (!this.state.isPlaying) return;
-            const elapsed = Math.floor((Date.now() - this.state.startTime) / 1000);
-            this.hud.updateTimer(elapsed);
-        }, 1000);
-    }
+
 
     renderLevel() {
         if (!this.state.currentLevel) return;
@@ -146,14 +139,16 @@ export class Game {
         this.state.foundItems.push(item.id);
         this.state.score += 100;
 
+        this.hud.updateScore(this.state.score);
+        this.hud.markItemFound(item.id);
+
         // Visual feedback
         this.showFeedback(item.x, item.y, 'FOUND!');
 
         // Check win condition
         if (this.state.foundItems.length === this.state.currentLevel.items.length) {
             console.log('Level Complete!');
-            setTimeout(() => alert('Level Complete! Score: ' + this.state.score), 100);
-            this.state.isPlaying = false;
+            this.endLevel(true);
         }
     }
 
