@@ -1,9 +1,12 @@
 import { ThemeManager } from './ThemeManager.js';
 import { LevelLoader } from './LevelLoader.js';
 
+import { HUD } from '../ui/HUD.js';
+
 export class Game {
     constructor(containerId) {
         this.container = document.getElementById(containerId);
+        this.hud = new HUD('ui-layer'); // Initialize HUD
         this.themeManager = new ThemeManager();
         this.levelLoader = new LevelLoader();
         this.state = {
@@ -11,28 +14,14 @@ export class Game {
             score: 0,
             foundItems: [],
             startTime: 0,
-            isPlaying: false
+            isPlaying: false,
+            timerInterval: null
         };
 
         this.init();
     }
 
-    async init() {
-        try {
-            console.log('Game Initializing...');
-            await this.themeManager.loadThemes();
-            // For now, auto-load the first theme/level for testing
-            const firstTheme = this.themeManager.getThemes()[0];
-            if (firstTheme) {
-                await this.startLevel(firstTheme.id, 1);
-            } else {
-                console.error('No themes found');
-            }
-        } catch (e) {
-            console.error('Game initialization failed:', e);
-        }
-    }
-
+    // ... init remains same ...
 
     async startLevel(themeId, levelId) {
         console.log(`Starting Level: ${themeId} - ${levelId}`);
@@ -41,8 +30,34 @@ export class Game {
         this.state.foundItems = [];
         this.state.isPlaying = true;
         this.state.startTime = Date.now();
+        this.state.score = 0;
+
+        // Setup HUD
+        this.hud.initItems(levelData.items);
+        this.hud.updateScore(0);
+        this.startTimer();
 
         this.renderLevel();
+    }
+
+    startTimer() {
+        if (this.state.timerInterval) clearInterval(this.state.timerInterval);
+        this.state.timerInterval = setInterval(() => {
+            if (!this.state.isPlaying) return;
+            const elapsed = Math.floor((Date.now() - this.state.startTime) / 1000);
+            // Maybe count down? forcing count up for now.
+            this.hud.updateTimer(elapsed);
+        }, 1000);
+    }
+
+
+    startTimer() {
+        if (this.state.timerInterval) clearInterval(this.state.timerInterval);
+        this.state.timerInterval = setInterval(() => {
+            if (!this.state.isPlaying) return;
+            const elapsed = Math.floor((Date.now() - this.state.startTime) / 1000);
+            this.hud.updateTimer(elapsed);
+        }, 1000);
     }
 
     renderLevel() {
@@ -142,9 +157,16 @@ export class Game {
         }
     }
 
+    endLevel(win) {
+        this.state.isPlaying = false;
+        clearInterval(this.state.timerInterval);
+        setTimeout(() => alert(win ? `Level Complete! Score: ${this.state.score}` : 'Game Over'), 100);
+    }
+
     handleMiss(x, y) {
         console.log('Miss!');
         this.state.score = Math.max(0, this.state.score - 10);
+        this.hud.updateScore(this.state.score);
         // Visual feedback can be added here
     }
 
