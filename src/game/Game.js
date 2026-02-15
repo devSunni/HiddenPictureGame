@@ -52,11 +52,20 @@ export class Game {
         this.container.innerHTML = '';
 
         // Background
+        console.log(`Loading background: ${this.state.currentLevel.background}`);
         const bg = document.createElement('div');
         bg.className = 'game-background';
+
+        // Validate image loading
+        const img = new Image();
+        img.src = this.state.currentLevel.background;
+        img.onload = () => console.log('Background image loaded successfully');
+        img.onerror = (e) => console.error(`Failed to load background image: ${this.state.currentLevel.background}`, e);
+
         bg.style.backgroundImage = `url(${this.state.currentLevel.background})`;
         bg.style.width = '100%';
         bg.style.height = '100%';
+
         bg.style.backgroundSize = 'contain';
         bg.style.backgroundRepeat = 'no-repeat';
         bg.style.backgroundPosition = 'center';
