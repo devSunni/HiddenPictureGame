@@ -9,8 +9,9 @@ export class LevelLoader {
             return data;
         } catch (e) {
             console.error('Failed to load level:', e);
-            return null;
+            throw e; // Re-throw to be caught by Game or Global handler
         }
     }
 }
+
 

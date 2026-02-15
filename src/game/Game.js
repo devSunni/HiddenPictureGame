@@ -18,14 +18,21 @@ export class Game {
     }
 
     async init() {
-        console.log('Game Initializing...');
-        await this.themeManager.loadThemes();
-        // For now, auto-load the first theme/level for testing
-        const firstTheme = this.themeManager.getThemes()[0];
-        if (firstTheme) {
-            this.startLevel(firstTheme.id, 1);
+        try {
+            console.log('Game Initializing...');
+            await this.themeManager.loadThemes();
+            // For now, auto-load the first theme/level for testing
+            const firstTheme = this.themeManager.getThemes()[0];
+            if (firstTheme) {
+                await this.startLevel(firstTheme.id, 1);
+            } else {
+                console.error('No themes found');
+            }
+        } catch (e) {
+            console.error('Game initialization failed:', e);
         }
     }
+
 
     async startLevel(themeId, levelId) {
         console.log(`Starting Level: ${themeId} - ${levelId}`);
